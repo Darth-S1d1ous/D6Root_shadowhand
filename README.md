@@ -4,5 +4,5 @@ This repo serves as a reference for all newcomers unfamiliar with usda files and
 
 ## Dependencies
 
-1. OpenUSD: [Installation guide][https://github.com/PixarAnimationStudios/OpenUSD]
-2. Isaac Sim: [Installation guide][https://docs.isaacsim.omniverse.nvidia.com/4.5.0/installation/download.html]
+1. OpenUSD: [Installation guide](https://github.com/PixarAnimationStudios/OpenUSD)
+2. Isaac Sim: [Installation guide](https://docs.isaacsim.omniverse.nvidia.com/4.5.0/installation/download.html)
