@@ -1,0 +1,1693 @@
+#usda 1.0
+(
+    customLayerData = {
+        dictionary cameraSettings = {
+            dictionary Front = {
+                double3 position = (50000.000000000015, -1.1102230246251565e-11, 0)
+                double radius = 500
+            }
+            dictionary Perspective = {
+                double3 position = (0.8346240459307888, -0.4693664109270929, 0.6905969943682987)
+                double3 target = (-0.02234272599581427, -0.41364797494440486, 0.002534841499505223)
+            }
+            dictionary Right = {
+                double3 position = (0, -50000, -1.1102230246251565e-11)
+                double radius = 500
+            }
+            dictionary Top = {
+                double3 position = (0, 0, 50000)
+                double radius = 500
+            }
+            string boundCamera = "/OmniverseKit_Persp"
+        }
+        dictionary omni_layer = {
+            dictionary muteness = {
+            }
+        }
+        dictionary renderSettings = {
+        }
+    }
+    defaultPrim = "shadow_hand"
+    metersPerUnit = 1
+    timeCodesPerSecond = 60
+    upAxis = "Z"
+)
+
+def Xform "shadow_hand" (
+    prepend apiSchemas = ["PhysicsArticulationRootAPI", "PhysxArticulationAPI"]
+)
+{
+    bool physxArticulation:enabledSelfCollisions = 1
+
+    def Xform "robot0_hand_mount" (
+        prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysxRigidBodyAPI", "PhysicsMassAPI"]
+    )
+    {
+        point3f physics:centerOfMass = (0, 0, 0)
+        float3 physics:diagonalInertia = (0.001, 0.001, 0.001)
+        float physics:mass = 0.1
+        float physxRigidBody:angularDamping = 0.01
+        float physxRigidBody:maxAngularVelocity = 3666.93
+        float physxRigidBody:maxDepenetrationVelocity = 1000
+        float physxRigidBody:maxLinearVelocity = 1000
+        bool physxRigidBody:retainAccelerations = 1
+        float physxRigidBody:stabilizationThreshold = 0
+        matrix4d xformOp:transform = ( (-1.0000001001368801, -9.176704643572287e-12, 0.0000025351818616565615, 0), (-0.00000253518186167317, 0.0000035745590157842955, -1.0000000500602644, 0), (-1.2388751320386443e-14, -1.0000000500634778, -0.000003674699109446067, 0), (0, 0, 0, 1) )
+        uniform token[] xformOpOrder = ["xformOp:transform"]
+    }
+
+    def "joints"
+    {
+        def PhysicsFixedJoint "rootJoint"
+        {
+            rel physics:body1 = </shadow_hand/robot0_hand_mount>
+            point3f physics:localPos1 = (0, 0, 0)
+            quatf physics:localRot1 = (8.963204e-7, -8.9632374e-7, 0.7071081, -0.7071055)
+        }
+
+        def PhysicsFixedJoint "robot0_forearm"
+        {
+            rel physics:body0 = </shadow_hand/robot0_hand_mount>
+            rel physics:body1 = </shadow_hand/robot0_forearm>
+            float physics:breakForce = 3.4028235e38
+            float physics:breakTorque = 3.4028235e38
+            point3f physics:localPos0 = (-1.3498124e-16, 0.009999999, -5.759928e-10)
+            point3f physics:localPos1 = (-5.847097e-16, 9.313204e-10, 5.759941e-10)
+            quatf physics:localRot0 = (1, 5.0716098e-20, -4.0194437e-14, 4.0194292e-14)
+            quatf physics:localRot1 = (1, 5.0716098e-20, -4.0194437e-14, 4.0194292e-14)
+        }
+
+        def PhysicsRevoluteJoint "robot0_WRJ1" (
+            prepend apiSchemas = ["PhysxLimitAPI:X", "PhysxJointAPI"]
+        )
+        {
+            uniform token physics:axis = "X"
+            rel physics:body0 = </shadow_hand/robot0_forearm>
+            rel physics:body1 = </shadow_hand/robot0_wrist>
+            float physics:breakForce = 3.4028235e38
+            float physics:breakTorque = 3.4028235e38
+            point3f physics:localPos0 = (3.95491e-14, -1.6851109e-8, 0.25600004)
+            point3f physics:localPos1 = (-3.795456e-14, -7.45069e-9, 2.9802294e-8)
+            quatf physics:localRot0 = (0.7071068, -2.842173e-8, 6.0969524e-10, 0.7071067)
+            quatf physics:localRot1 = (0.7071068, -2.842173e-8, 6.0969524e-10, 0.7071067)
+            float physics:lowerLimit = -28.017633
+            float physics:upperLimit = 8.021409
+            float physxJoint:armature = 0.005
+            float physxJoint:maxJointVelocity = 5729.58
+            float physxLimit:X:damping = 0.5
+            float physxLimit:X:stiffness = 0
+        }
+
+        def PhysicsRevoluteJoint "robot0_WRJ0" (
+            prepend apiSchemas = ["PhysxLimitAPI:X", "PhysxJointAPI"]
+        )
+        {
+            uniform token physics:axis = "X"
+            rel physics:body0 = </shadow_hand/robot0_wrist>
+            rel physics:body1 = </shadow_hand/robot0_palm>
+            float physics:breakForce = 3.4028235e38
+            float physics:breakTorque = 3.4028235e38
+            point3f physics:localPos0 = (1.410666e-14, -5.7305076e-9, 0.03400001)
+            point3f physics:localPos1 = (1.4728656e-14, -9.313116e-9, -2.9802354e-8)
+            quatf physics:localRot0 = (1, 5.0716098e-20, -4.0194437e-14, 4.0194292e-14)
+            quatf physics:localRot1 = (1, 5.0716098e-20, -4.0194437e-14, 4.0194292e-14)
+            float physics:lowerLimit = -39.992455
+            float physics:upperLimit = 28.017633
+            float physxJoint:armature = 0.005
+            float physxJoint:maxJointVelocity = 5729.58
+            float physxLimit:X:damping = 0.5
+            float physxLimit:X:stiffness = 0
+        }
+
+        def PhysicsRevoluteJoint "robot0_FFJ3" (
+            prepend apiSchemas = ["PhysxLimitAPI:X", "PhysxJointAPI"]
+        )
+        {
+            uniform token physics:axis = "X"
+            rel physics:body0 = </shadow_hand/robot0_palm>
+            rel physics:body1 = </shadow_hand/robot0_ffknuckle>
+            float physics:breakForce = 3.4028235e38
+            float physics:breakTorque = 3.4028235e38
+            point3f physics:localPos0 = (0.032999996, -1.2115658e-8, 0.09499999)
+            point3f physics:localPos1 = (7.450549e-9, 1.2107212e-8, 4.3298698e-14)
+            quatf physics:localRot0 = (0.7071068, -2.842173e-8, 6.0969524e-10, 0.7071067)
+            quatf physics:localRot1 = (0.7071068, -2.842173e-8, 6.0969524e-10, 0.7071067)
+            float physics:lowerLimit = -19.996227
+            float physics:upperLimit = 19.996227
+            float physxJoint:maxJointVelocity = 5729.58
+            float physxLimit:X:damping = 0.1
+            float physxLimit:X:stiffness = 0
+        }
+
+        def PhysicsRevoluteJoint "robot0_FFJ2" (
+            prepend apiSchemas = ["PhysxLimitAPI:X", "PhysxJointAPI"]
+        )
+        {
+            uniform token physics:axis = "X"
+            rel physics:body0 = </shadow_hand/robot0_ffknuckle>
+            rel physics:body1 = </shadow_hand/robot0_ffproximal>
+            float physics:breakForce = 3.4028235e38
+            float physics:breakTorque = 3.4028235e38
+            point3f physics:localPos0 = (6.938894e-18, 0, 0)
+            point3f physics:localPos1 = (6.938894e-18, 0, 0)
+            quatf physics:localRot0 = (1, 5.0716098e-20, -4.0194437e-14, 4.0194292e-14)
+            quatf physics:localRot1 = (1, 5.0716098e-20, -4.0194437e-14, 4.0194292e-14)
+            float physics:lowerLimit = 0
+            float physics:upperLimit = 90.011665
+            float physxJoint:maxJointVelocity = 5729.58
+            float physxLimit:X:damping = 0.1
+            float physxLimit:X:stiffness = 0
+        }
+
+        def PhysicsRevoluteJoint "robot0_FFJ1" (
+            prepend apiSchemas = ["PhysxLimitAPI:X", "PhysxTendonAxisRootAPI:robot0_T_FFJ1c", "PhysxJointAPI"]
+        )
+        {
+            uniform token physics:axis = "X"
+            rel physics:body0 = </shadow_hand/robot0_ffproximal>
+            rel physics:body1 = </shadow_hand/robot0_ffmiddle>
+            float physics:breakForce = 3.4028235e38
+            float physics:breakTorque = 3.4028235e38
+            point3f physics:localPos0 = (1.2566337e-14, -5.17403e-9, 0.045000013)
+            point3f physics:localPos1 = (-3.725304e-9, 5.587816e-9, 2.980234e-8)
+            quatf physics:localRot0 = (1, 5.0716098e-20, -4.0194437e-14, 4.0194292e-14)
+            quatf physics:localRot1 = (1, 5.0716098e-20, -4.0194437e-14, 4.0194292e-14)
+            float physics:lowerLimit = 0
+            float physics:upperLimit = 90.011665
+            float physxJoint:maxJointVelocity = 5729.58
+            float physxLimit:X:damping = 0.1
+            float physxLimit:X:stiffness = 0
+            float physxTendon:robot0_T_FFJ1c:damping = 0
+            float[] physxTendon:robot0_T_FFJ1c:gearing = [-0.00805]
+            float physxTendon:robot0_T_FFJ1c:lowerLimit = -0.001
+            float physxTendon:robot0_T_FFJ1c:restLength = 0
+            float physxTendon:robot0_T_FFJ1c:stiffness = 0
+            float physxTendon:robot0_T_FFJ1c:upperLimit = 0.001
+        }
+
+        def PhysicsRevoluteJoint "robot0_FFJ0" (
+            prepend apiSchemas = ["PhysxLimitAPI:X", "PhysxTendonAxisAPI:robot0_T_FFJ1c", "PhysxJointAPI"]
+        )
+        {
+            uniform token physics:axis = "X"
+            rel physics:body0 = </shadow_hand/robot0_ffmiddle>
+            rel physics:body1 = </shadow_hand/robot0_ffdistal>
+            float physics:breakForce = 3.4028235e38
+            float physics:breakTorque = 3.4028235e38
+            point3f physics:localPos0 = (5.9327543e-15, -2.4605278e-9, 0.025000004)
+            point3f physics:localPos1 = (6.8473005e-14, -2.7008463e-8, 2.9802225e-8)
+            quatf physics:localRot0 = (1, 5.0716098e-20, -4.0194437e-14, 4.0194292e-14)
+            quatf physics:localRot1 = (1, 5.0716098e-20, -4.0194437e-14, 4.0194292e-14)
+            float physics:lowerLimit = 0
+            float physics:upperLimit = 90.011665
+            float physxJoint:maxJointVelocity = 5729.58
+            float physxLimit:X:damping = 0.1
+            float physxLimit:X:stiffness = 0
+            float[] physxTendon:robot0_T_FFJ1c:gearing = [0.00705]
+        }
+
+        def PhysicsRevoluteJoint "robot0_MFJ3" (
+            prepend apiSchemas = ["PhysxLimitAPI:X", "PhysxJointAPI"]
+        )
+        {
+            uniform token physics:axis = "X"
+            rel physics:body0 = </shadow_hand/robot0_palm>
+            rel physics:body1 = </shadow_hand/robot0_mfknuckle>
+            float physics:breakForce = 3.4028235e38
+            float physics:breakTorque = 3.4028235e38
+            point3f physics:localPos0 = (0.010999999, -6.3198563e-10, 0.09899997)
+            point3f physics:localPos1 = (9.3132013e-10, 9.312154e-10, 2.9802322e-8)
+            quatf physics:localRot0 = (0.7071068, -2.842173e-8, 6.0969524e-10, 0.7071067)
+            quatf physics:localRot1 = (0.7071068, -2.842173e-8, 6.0969524e-10, 0.7071067)
+            float physics:lowerLimit = -19.996227
+            float physics:upperLimit = 19.996227
+            float physxJoint:maxJointVelocity = 5729.58
+            float physxLimit:X:damping = 0.1
+            float physxLimit:X:stiffness = 0
+        }
+
+        def PhysicsRevoluteJoint "robot0_MFJ2" (
+            prepend apiSchemas = ["PhysxLimitAPI:X", "PhysxJointAPI"]
+        )
+        {
+            uniform token physics:axis = "X"
+            rel physics:body0 = </shadow_hand/robot0_mfknuckle>
+            rel physics:body1 = </shadow_hand/robot0_mfproximal>
+            float physics:breakForce = 3.4028235e38
+            float physics:breakTorque = 3.4028235e38
+            point3f physics:localPos0 = (-1.7347235e-18, 0, -5.551115e-17)
+            point3f physics:localPos1 = (-1.7347235e-18, 0, -5.551115e-17)
+            quatf physics:localRot0 = (1, 5.0716098e-20, -4.0194437e-14, 4.0194292e-14)
+            quatf physics:localRot1 = (1, 5.0716098e-20, -4.0194437e-14, 4.0194292e-14)
+            float physics:lowerLimit = 0
+            float physics:upperLimit = 90.011665
+            float physxJoint:maxJointVelocity = 5729.58
+            float physxLimit:X:damping = 0.1
+            float physxLimit:X:stiffness = 0
+        }
+
+        def PhysicsRevoluteJoint "robot0_MFJ1" (
+            prepend apiSchemas = ["PhysxLimitAPI:X", "PhysxTendonAxisRootAPI:robot0_T_MFJ1c", "PhysxJointAPI"]
+        )
+        {
+            uniform token physics:axis = "X"
+            rel physics:body0 = </shadow_hand/robot0_mfproximal>
+            rel physics:body1 = </shadow_hand/robot0_mfmiddle>
+            float physics:breakForce = 3.4028235e38
+            float physics:breakTorque = 3.4028235e38
+            point3f physics:localPos0 = (1.2559398e-14, -5.17403e-9, 0.045000013)
+            point3f physics:localPos1 = (-1.4167487e-14, 5.5880447e-9, -2.9802301e-8)
+            quatf physics:localRot0 = (1, 5.0716098e-20, -4.0194437e-14, 4.0194292e-14)
+            quatf physics:localRot1 = (1, 5.0716098e-20, -4.0194437e-14, 4.0194292e-14)
+            float physics:lowerLimit = 0
+            float physics:upperLimit = 90.011665
+            float physxJoint:maxJointVelocity = 5729.58
+            float physxLimit:X:damping = 0.1
+            float physxLimit:X:stiffness = 0
+            float physxTendon:robot0_T_MFJ1c:damping = 0
+            float[] physxTendon:robot0_T_MFJ1c:gearing = [-0.00805]
+            float physxTendon:robot0_T_MFJ1c:lowerLimit = -0.001
+            float physxTendon:robot0_T_MFJ1c:restLength = 0
+            float physxTendon:robot0_T_MFJ1c:stiffness = 0
+            float physxTendon:robot0_T_MFJ1c:upperLimit = 0.001
+        }
+
+        def PhysicsRevoluteJoint "robot0_MFJ0" (
+            prepend apiSchemas = ["PhysxLimitAPI:X", "PhysxTendonAxisAPI:robot0_T_MFJ1c", "PhysxJointAPI"]
+        )
+        {
+            uniform token physics:axis = "X"
+            rel physics:body0 = </shadow_hand/robot0_mfmiddle>
+            rel physics:body1 = </shadow_hand/robot0_mfdistal>
+            float physics:breakForce = 3.4028235e38
+            float physics:breakTorque = 3.4028235e38
+            point3f physics:localPos0 = (5.92755e-15, -2.4605278e-9, 0.025000004)
+            point3f physics:localPos1 = (-7.082876e-15, 2.7939675e-9, 9.992007e-15)
+            quatf physics:localRot0 = (1, 5.0716098e-20, -4.0194437e-14, 4.0194292e-14)
+            quatf physics:localRot1 = (1, 5.0716098e-20, -4.0194437e-14, 4.0194292e-14)
+            float physics:lowerLimit = 0
+            float physics:upperLimit = 90.011665
+            float physxJoint:maxJointVelocity = 5729.58
+            float physxLimit:X:damping = 0.1
+            float physxLimit:X:stiffness = 0
+            float[] physxTendon:robot0_T_MFJ1c:gearing = [0.00705]
+        }
+
+        def PhysicsRevoluteJoint "robot0_RFJ3" (
+            prepend apiSchemas = ["PhysxLimitAPI:X", "PhysxJointAPI"]
+        )
+        {
+            uniform token physics:axis = "X"
+            rel physics:body0 = </shadow_hand/robot0_palm>
+            rel physics:body1 = </shadow_hand/robot0_rfknuckle>
+            float physics:breakForce = 3.4028235e38
+            float physics:breakTorque = 3.4028235e38
+            point3f physics:localPos0 = (-0.010999999, -1.1904942e-8, 0.09499999)
+            point3f physics:localPos1 = (-1.8628268e-9, 7.171194e-8, -2.9802065e-8)
+            quatf physics:localRot0 = (0.7071068, -2.842173e-8, 6.0969524e-10, 0.7071067)
+            quatf physics:localRot1 = (0.7071068, -2.842173e-8, 6.0969524e-10, 0.7071067)
+            float physics:lowerLimit = -19.996227
+            float physics:upperLimit = 19.996227
+            float physxJoint:maxJointVelocity = 5729.58
+            float physxLimit:X:damping = 0.1
+            float physxLimit:X:stiffness = 0
+        }
+
+        def PhysicsRevoluteJoint "robot0_RFJ2" (
+            prepend apiSchemas = ["PhysxLimitAPI:X", "PhysxJointAPI"]
+        )
+        {
+            uniform token physics:axis = "X"
+            rel physics:body0 = </shadow_hand/robot0_rfknuckle>
+            rel physics:body1 = </shadow_hand/robot0_rfproximal>
+            float physics:breakForce = 3.4028235e38
+            float physics:breakTorque = 3.4028235e38
+            point3f physics:localPos0 = (1.7347235e-18, -1.7347235e-18, 5.551115e-17)
+            point3f physics:localPos1 = (1.7347235e-18, -1.7347235e-18, 5.551115e-17)
+            quatf physics:localRot0 = (1, 5.0716098e-20, -4.0194437e-14, 4.0194292e-14)
+            quatf physics:localRot1 = (1, 5.0716098e-20, -4.0194437e-14, 4.0194292e-14)
+            float physics:lowerLimit = 0
+            float physics:upperLimit = 90.011665
+            float physxJoint:maxJointVelocity = 5729.58
+            float physxLimit:X:damping = 0.1
+            float physxLimit:X:stiffness = 0
+        }
+
+        def PhysicsRevoluteJoint "robot0_RFJ1" (
+            prepend apiSchemas = ["PhysxLimitAPI:X", "PhysxTendonAxisRootAPI:robot0_T_RFJ1c", "PhysxJointAPI"]
+        )
+        {
+            uniform token physics:axis = "X"
+            rel physics:body0 = </shadow_hand/robot0_rfproximal>
+            rel physics:body1 = </shadow_hand/robot0_rfmiddle>
+            float physics:breakForce = 3.4028235e38
+            float physics:breakTorque = 3.4028235e38
+            point3f physics:localPos0 = (1.2561133e-14, -5.17403e-9, 0.045000013)
+            point3f physics:localPos1 = (9.313839e-10, -2.4214494e-8, 2.9802234e-8)
+            quatf physics:localRot0 = (1, 5.0716098e-20, -4.0194437e-14, 4.0194292e-14)
+            quatf physics:localRot1 = (1, 5.0716098e-20, -4.0194437e-14, 4.0194292e-14)
+            float physics:lowerLimit = 0
+            float physics:upperLimit = 90.011665
+            float physxJoint:maxJointVelocity = 5729.58
+            float physxLimit:X:damping = 0.1
+            float physxLimit:X:stiffness = 0
+            float physxTendon:robot0_T_RFJ1c:damping = 0
+            float[] physxTendon:robot0_T_RFJ1c:gearing = [-0.00805]
+            float physxTendon:robot0_T_RFJ1c:lowerLimit = -0.001
+            float physxTendon:robot0_T_RFJ1c:restLength = 0
+            float physxTendon:robot0_T_RFJ1c:stiffness = 0
+            float physxTendon:robot0_T_RFJ1c:upperLimit = 0.001
+        }
+
+        def PhysicsRevoluteJoint "robot0_RFJ0" (
+            prepend apiSchemas = ["PhysxLimitAPI:X", "PhysxTendonAxisAPI:robot0_T_RFJ1c", "PhysxJointAPI"]
+        )
+        {
+            uniform token physics:axis = "X"
+            rel physics:body0 = </shadow_hand/robot0_rfmiddle>
+            rel physics:body1 = </shadow_hand/robot0_rfdistal>
+            float physics:breakForce = 3.4028235e38
+            float physics:breakTorque = 3.4028235e38
+            point3f physics:localPos0 = (5.929285e-15, -2.4605278e-9, 0.025000004)
+            point3f physics:localPos1 = (-7.082876e-15, 2.7939675e-9, 9.992007e-15)
+            quatf physics:localRot0 = (1, 5.0716098e-20, -4.0194437e-14, 4.0194292e-14)
+            quatf physics:localRot1 = (1, 5.0716098e-20, -4.0194437e-14, 4.0194292e-14)
+            float physics:lowerLimit = 0
+            float physics:upperLimit = 90.011665
+            float physxJoint:maxJointVelocity = 5729.58
+            float physxLimit:X:damping = 0.1
+            float physxLimit:X:stiffness = 0
+            float[] physxTendon:robot0_T_RFJ1c:gearing = [0.00705]
+        }
+
+        def PhysicsRevoluteJoint "robot0_LFJ4" (
+            prepend apiSchemas = ["PhysxLimitAPI:X", "PhysxJointAPI"]
+        )
+        {
+            uniform token physics:axis = "X"
+            rel physics:body0 = </shadow_hand/robot0_palm>
+            rel physics:body1 = </shadow_hand/robot0_lfmetacarpal>
+            float physics:breakForce = 3.4028235e38
+            float physics:breakTorque = 3.4028235e38
+            point3f physics:localPos0 = (-0.016999999, -3.6191634e-9, 0.043999996)
+            point3f physics:localPos1 = (-1.8626545e-9, 3.7252854e-9, 1.3322676e-14)
+            quatf physics:localRot0 = (0.88627774, -4.391587e-9, -0.46315414, -2.2566397e-8)
+            quatf physics:localRot1 = (0.88627774, -4.391587e-9, -0.46315414, -2.2566397e-8)
+            float physics:lowerLimit = 0
+            float physics:upperLimit = 44.97719
+            float physxJoint:maxJointVelocity = 5729.58
+            float physxLimit:X:damping = 0.1
+            float physxLimit:X:stiffness = 0
+        }
+
+        def PhysicsRevoluteJoint "robot0_LFJ3" (
+            prepend apiSchemas = ["PhysxLimitAPI:X", "PhysxJointAPI"]
+        )
+        {
+            uniform token physics:axis = "X"
+            rel physics:body0 = </shadow_hand/robot0_lfmetacarpal>
+            rel physics:body1 = </shadow_hand/robot0_lfknuckle>
+            float physics:breakForce = 3.4028235e38
+            float physics:breakTorque = 3.4028235e38
+            point3f physics:localPos0 = (-0.016999999, -3.6191652e-9, 0.043999996)
+            point3f physics:localPos1 = (-1.6055213e-13, 6.3329935e-8, 2.2631896e-13)
+            quatf physics:localRot0 = (0.7071068, -2.842173e-8, 6.0969524e-10, 0.7071067)
+            quatf physics:localRot1 = (0.7071068, -2.842173e-8, 6.0969524e-10, 0.7071067)
+            float physics:lowerLimit = -19.996227
+            float physics:upperLimit = 19.996227
+            float physxJoint:maxJointVelocity = 5729.58
+            float physxLimit:X:damping = 0.1
+            float physxLimit:X:stiffness = 0
+        }
+
+        def PhysicsRevoluteJoint "robot0_LFJ2" (
+            prepend apiSchemas = ["PhysxLimitAPI:X", "PhysxJointAPI"]
+        )
+        {
+            uniform token physics:axis = "X"
+            rel physics:body0 = </shadow_hand/robot0_lfknuckle>
+            rel physics:body1 = </shadow_hand/robot0_lfproximal>
+            float physics:breakForce = 3.4028235e38
+            float physics:breakTorque = 3.4028235e38
+            point3f physics:localPos0 = (0, 0, -5.551115e-17)
+            point3f physics:localPos1 = (0, 0, -5.551115e-17)
+            quatf physics:localRot0 = (1, 5.0716098e-20, -4.0194437e-14, 4.0194292e-14)
+            quatf physics:localRot1 = (1, 5.0716098e-20, -4.0194437e-14, 4.0194292e-14)
+            float physics:lowerLimit = 0
+            float physics:upperLimit = 90.011665
+            float physxJoint:maxJointVelocity = 5729.58
+            float physxLimit:X:damping = 0.1
+            float physxLimit:X:stiffness = 0
+        }
+
+        def PhysicsRevoluteJoint "robot0_LFJ1" (
+            prepend apiSchemas = ["PhysxLimitAPI:X", "PhysxTendonAxisRootAPI:robot0_T_LFJ1c", "PhysxJointAPI"]
+        )
+        {
+            uniform token physics:axis = "X"
+            rel physics:body0 = </shadow_hand/robot0_lfproximal>
+            rel physics:body1 = </shadow_hand/robot0_lfmiddle>
+            float physics:breakForce = 3.4028235e38
+            float physics:breakTorque = 3.4028235e38
+            point3f physics:localPos0 = (1.2559398e-14, -5.17403e-9, 0.045000013)
+            point3f physics:localPos1 = (3.725427e-9, -5.4016915e-8, 5.960445e-8)
+            quatf physics:localRot0 = (1, 5.0716098e-20, -4.0194437e-14, 4.0194292e-14)
+            quatf physics:localRot1 = (1, 5.0716098e-20, -4.0194437e-14, 4.0194292e-14)
+            float physics:lowerLimit = 0
+            float physics:upperLimit = 90.011665
+            float physxJoint:maxJointVelocity = 5729.58
+            float physxLimit:X:damping = 0.1
+            float physxLimit:X:stiffness = 0
+            float physxTendon:robot0_T_LFJ1c:damping = 0
+            float[] physxTendon:robot0_T_LFJ1c:gearing = [-0.00805]
+            float physxTendon:robot0_T_LFJ1c:lowerLimit = -0.001
+            float physxTendon:robot0_T_LFJ1c:restLength = 0
+            float physxTendon:robot0_T_LFJ1c:stiffness = 0
+            float physxTendon:robot0_T_LFJ1c:upperLimit = 0.001
+        }
+
+        def PhysicsRevoluteJoint "robot0_LFJ0" (
+            prepend apiSchemas = ["PhysxLimitAPI:X", "PhysxTendonAxisAPI:robot0_T_LFJ1c", "PhysxJointAPI"]
+        )
+        {
+            uniform token physics:axis = "X"
+            rel physics:body0 = </shadow_hand/robot0_lfmiddle>
+            rel physics:body1 = </shadow_hand/robot0_lfdistal>
+            float physics:breakForce = 3.4028235e38
+            float physics:breakTorque = 3.4028235e38
+            point3f physics:localPos0 = (5.9327543e-15, -2.4605278e-9, 0.025000004)
+            point3f physics:localPos1 = (-3.725297e-9, 2.7940676e-9, -2.9802312e-8)
+            quatf physics:localRot0 = (1, 5.0716098e-20, -4.0194437e-14, 4.0194292e-14)
+            quatf physics:localRot1 = (1, 5.0716098e-20, -4.0194437e-14, 4.0194292e-14)
+            float physics:lowerLimit = 0
+            float physics:upperLimit = 90.011665
+            float physxJoint:maxJointVelocity = 5729.58
+            float physxLimit:X:damping = 0.1
+            float physxLimit:X:stiffness = 0
+            float[] physxTendon:robot0_T_LFJ1c:gearing = [0.00705]
+        }
+
+        def PhysicsRevoluteJoint "robot0_THJ4" (
+            prepend apiSchemas = ["PhysxLimitAPI:X", "PhysxJointAPI"]
+        )
+        {
+            uniform token physics:axis = "X"
+            rel physics:body0 = </shadow_hand/robot0_palm>
+            rel physics:body1 = </shadow_hand/robot0_thbase>
+            float physics:breakForce = 3.4028235e38
+            float physics:breakTorque = 3.4028235e38
+            point3f physics:localPos0 = (0.033999998, -0.009000002, 0.02900001)
+            point3f physics:localPos1 = (2.635229e-9, -5.8206706e-10, 2.6331288e-9)
+            quatf physics:localRot0 = (0.38286737, 1.7145327e-8, 0.9238033, 1.9506636e-8)
+            quatf physics:localRot1 = (0.70710677, 2.0659539e-9, 0.70710677, -1.7567977e-8)
+            float physics:lowerLimit = -59.98868
+            float physics:upperLimit = 59.98868
+            float physxJoint:maxJointVelocity = 5729.58
+            float physxLimit:X:damping = 0.1
+            float physxLimit:X:stiffness = 0
+        }
+
+        def PhysicsRevoluteJoint "robot0_THJ3" (
+            prepend apiSchemas = ["PhysxLimitAPI:X", "PhysxJointAPI"]
+        )
+        {
+            uniform token physics:axis = "X"
+            rel physics:body0 = </shadow_hand/robot0_thbase>
+            rel physics:body1 = </shadow_hand/robot0_thproximal>
+            float physics:breakForce = 3.4028235e38
+            float physics:breakTorque = 3.4028235e38
+            point3f physics:localPos0 = (0, 0, 0)
+            point3f physics:localPos1 = (0, 0, 0)
+            quatf physics:localRot0 = (1, 0, 4.2907033e-17, -2.1175824e-22)
+            quatf physics:localRot1 = (1, 0, 4.2907033e-17, -2.1175824e-22)
+            float physics:lowerLimit = 0
+            float physics:upperLimit = 70.01544
+            float physxJoint:maxJointVelocity = 5729.58
+            float physxLimit:X:damping = 0.1
+            float physxLimit:X:stiffness = 0
+        }
+
+        def PhysicsRevoluteJoint "robot0_THJ2" (
+            prepend apiSchemas = ["PhysxLimitAPI:X", "PhysxJointAPI"]
+        )
+        {
+            uniform token physics:axis = "X"
+            rel physics:body0 = </shadow_hand/robot0_thproximal>
+            rel physics:body1 = </shadow_hand/robot0_thhub>
+            float physics:breakForce = 3.4028235e38
+            float physics:breakTorque = 3.4028235e38
+            point3f physics:localPos0 = (7.4037683e-9, -2.4535702e-9, 0.03799999)
+            point3f physics:localPos1 = (-1.3176143e-8, 2.444674e-9, -1.3165644e-8)
+            quatf physics:localRot0 = (1, 0, 4.2907033e-17, -2.1175824e-22)
+            quatf physics:localRot1 = (1, 0, 4.2907033e-17, -2.1175824e-22)
+            float physics:lowerLimit = -11.974818
+            float physics:upperLimit = 11.974818
+            float physxJoint:maxJointVelocity = 5729.58
+            float physxLimit:X:damping = 0.1
+            float physxLimit:X:stiffness = 0
+        }
+
+        def PhysicsRevoluteJoint "robot0_THJ1" (
+            prepend apiSchemas = ["PhysxLimitAPI:X", "PhysxJointAPI"]
+        )
+        {
+            uniform token physics:axis = "X"
+            rel physics:body0 = </shadow_hand/robot0_thhub>
+            rel physics:body1 = </shadow_hand/robot0_thmiddle>
+            float physics:breakForce = 3.4028235e38
+            float physics:breakTorque = 3.4028235e38
+            point3f physics:localPos0 = (0, 0, 5.551115e-17)
+            point3f physics:localPos1 = (0, 0, 5.551115e-17)
+            quatf physics:localRot0 = (0.7071068, -8.4928375e-9, 3.11373e-9, 0.7071067)
+            quatf physics:localRot1 = (0.7071068, -8.4928375e-9, 3.11373e-9, 0.7071067)
+            float physics:lowerLimit = -30.022987
+            float physics:upperLimit = 30.022987
+            float physxJoint:maxJointVelocity = 5729.58
+            float physxLimit:X:damping = 0.1
+            float physxLimit:X:stiffness = 0
+        }
+
+        def PhysicsRevoluteJoint "robot0_THJ0" (
+            prepend apiSchemas = ["PhysxLimitAPI:X", "PhysxJointAPI"]
+        )
+        {
+            uniform token physics:axis = "X"
+            rel physics:body0 = </shadow_hand/robot0_thmiddle>
+            rel physics:body1 = </shadow_hand/robot0_thdistal>
+            float physics:breakForce = 3.4028235e38
+            float physics:breakTorque = 3.4028235e38
+            point3f physics:localPos0 = (8.037801e-9, -1.6740221e-9, 0.031999994)
+            point3f physics:localPos1 = (2.63187e-8, 1.629973e-9, -5.7962396e-8)
+            quatf physics:localRot0 = (0.7071068, -8.4928375e-9, 3.11373e-9, 0.7071067)
+            quatf physics:localRot1 = (0.7071068, -8.4928375e-9, 3.11373e-9, 0.7071067)
+            float physics:lowerLimit = -90.011665
+            float physics:upperLimit = 0
+            float physxJoint:maxJointVelocity = 5729.58
+            float physxLimit:X:damping = 0.1
+            float physxLimit:X:stiffness = 0
+        }
+    }
+
+    def Xform "robot0_forearm" (
+        prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysxRigidBodyAPI", "PhysicsMassAPI", "PhysicsFilteredPairsAPI"]
+    )
+    {
+        point3f physics:centerOfMass = (0.001, -0.002, 0.29)
+        float3 physics:diagonalInertia = (0.01, 0.01, 0.0075)
+        prepend rel physics:filteredPairs = [
+            </shadow_hand/robot0_wrist>,
+            </shadow_hand/robot0_palm>,
+            </shadow_hand/robot0_ffproximal>,
+            </shadow_hand/robot0_ffmiddle>,
+            </shadow_hand/robot0_ffdistal>,
+            </shadow_hand/robot0_mfproximal>,
+            </shadow_hand/robot0_mfmiddle>,
+            </shadow_hand/robot0_mfdistal>,
+            </shadow_hand/robot0_rfproximal>,
+            </shadow_hand/robot0_rfmiddle>,
+            </shadow_hand/robot0_rfdistal>,
+            </shadow_hand/robot0_lfmetacarpal>,
+            </shadow_hand/robot0_lfproximal>,
+            </shadow_hand/robot0_lfmiddle>,
+            </shadow_hand/robot0_lfdistal>,
+            </shadow_hand/robot0_thproximal>,
+            </shadow_hand/robot0_thmiddle>,
+            </shadow_hand/robot0_thdistal>,
+        ]
+        float physics:mass = 4
+        float physxRigidBody:angularDamping = 0.01
+        float physxRigidBody:maxAngularVelocity = 3666.93
+        float physxRigidBody:maxDepenetrationVelocity = 1000
+        float physxRigidBody:maxLinearVelocity = 1000
+        bool physxRigidBody:retainAccelerations = 1
+        float physxRigidBody:stabilizationThreshold = 0
+        matrix4d xformOp:transform = ( (-1.0000001001368801, -9.176704643572287e-12, 0.0000025351818616565615, 0), (-0.00000253518186167317, 0.0000035745590157842955, -1.0000000500602644, 0), (-1.2388751320386443e-14, -1.0000000500634778, -0.000003674699109446067, 0), (-2.5351816645979852e-8, 3.632158041000366e-8, -0.009999999776482582, 1) )
+        uniform token[] xformOpOrder = ["xformOp:transform"]
+
+        def "collisions" (
+            instanceable = true
+            references = @./shadow_hand.usd@</shadow_hand/robot0_forearm/collisions>
+        )
+        {
+        }
+
+        def "visuals" (
+            instanceable = true
+            references = @./shadow_hand.usd@</shadow_hand/robot0_forearm/visuals>
+        )
+        {
+        }
+    }
+
+    def Xform "robot0_wrist" (
+        prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysxRigidBodyAPI", "PhysicsMassAPI", "PhysicsFilteredPairsAPI"]
+    )
+    {
+        point3f physics:centerOfMass = (0.003, 0, 0.016)
+        float3 physics:diagonalInertia = (0.001, 0.001, 0.001)
+        prepend rel physics:filteredPairs = [
+            </shadow_hand/robot0_forearm>,
+            </shadow_hand/robot0_palm>,
+            </shadow_hand/robot0_ffproximal>,
+            </shadow_hand/robot0_ffmiddle>,
+            </shadow_hand/robot0_ffdistal>,
+            </shadow_hand/robot0_mfproximal>,
+            </shadow_hand/robot0_mfmiddle>,
+            </shadow_hand/robot0_mfdistal>,
+            </shadow_hand/robot0_rfproximal>,
+            </shadow_hand/robot0_rfmiddle>,
+            </shadow_hand/robot0_rfdistal>,
+            </shadow_hand/robot0_lfmetacarpal>,
+            </shadow_hand/robot0_lfproximal>,
+            </shadow_hand/robot0_lfmiddle>,
+            </shadow_hand/robot0_lfdistal>,
+            </shadow_hand/robot0_thproximal>,
+            </shadow_hand/robot0_thmiddle>,
+            </shadow_hand/robot0_thdistal>,
+        ]
+        float physics:mass = 0.3
+        float physxRigidBody:angularDamping = 0.01
+        float physxRigidBody:maxAngularVelocity = 3666.93
+        float physxRigidBody:maxDepenetrationVelocity = 1000
+        float physxRigidBody:maxLinearVelocity = 1000
+        bool physxRigidBody:retainAccelerations = 1
+        float physxRigidBody:stabilizationThreshold = 0
+        matrix4d xformOp:transform = ( (-1.0000001001368801, -9.176704643572287e-12, 0.0000025351818616565615, 0), (-0.00000253518186167317, 0.0000035745590157842955, -1.0000000500602644, 0), (-1.2388751320386443e-14, -1.0000000500634778, -0.000003674699109446067, 0), (-2.5351816645979852e-8, -0.25600001215934753, -0.0100009236484766, 1) )
+        uniform token[] xformOpOrder = ["xformOp:transform"]
+
+        def "collisions" (
+            instanceable = true
+            references = @./shadow_hand.usd@</shadow_hand/robot0_wrist/collisions>
+        )
+        {
+        }
+
+        def "visuals" (
+            instanceable = true
+            references = @./shadow_hand.usd@</shadow_hand/robot0_wrist/visuals>
+        )
+        {
+        }
+    }
+
+    def Xform "robot0_palm" (
+        prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysxRigidBodyAPI", "PhysicsMassAPI", "PhysicsFilteredPairsAPI"]
+    )
+    {
+        point3f physics:centerOfMass = (0.006, 0, 0.036)
+        float3 physics:diagonalInertia = (0.001, 0.001, 0.001)
+        prepend rel physics:filteredPairs = [
+            </shadow_hand/robot0_forearm>,
+            </shadow_hand/robot0_wrist>,
+            </shadow_hand/robot0_palm>,
+            </shadow_hand/robot0_ffproximal>,
+            </shadow_hand/robot0_ffmiddle>,
+            </shadow_hand/robot0_ffdistal>,
+            </shadow_hand/robot0_mfproximal>,
+            </shadow_hand/robot0_mfmiddle>,
+            </shadow_hand/robot0_mfdistal>,
+            </shadow_hand/robot0_rfproximal>,
+            </shadow_hand/robot0_rfmiddle>,
+            </shadow_hand/robot0_rfdistal>,
+            </shadow_hand/robot0_lfmetacarpal>,
+            </shadow_hand/robot0_lfproximal>,
+            </shadow_hand/robot0_lfmiddle>,
+            </shadow_hand/robot0_lfdistal>,
+            </shadow_hand/robot0_thproximal>,
+            </shadow_hand/robot0_thmiddle>,
+            </shadow_hand/robot0_thdistal>,
+        ]
+        float physics:mass = 0.3
+        float physxRigidBody:angularDamping = 0.01
+        float physxRigidBody:maxAngularVelocity = 3666.93
+        float physxRigidBody:maxDepenetrationVelocity = 1000
+        float physxRigidBody:maxLinearVelocity = 1000
+        bool physxRigidBody:retainAccelerations = 1
+        float physxRigidBody:stabilizationThreshold = 0
+        matrix4d xformOp:transform = ( (-1.0000001001368801, -9.176704643572287e-12, 0.0000025351818616565615, 0), (-0.00000253518186167317, 0.0000035745590157842955, -1.0000000500602644, 0), (-1.2388751320386443e-14, -1.0000000500634778, -0.000003674699109446067, 0), (-2.5351816645979852e-8, -0.2900000214576721, -0.010001042857766151, 1) )
+        uniform token[] xformOpOrder = ["xformOp:transform"]
+
+        def "collisions" (
+            instanceable = true
+            references = @./shadow_hand.usd@</shadow_hand/robot0_palm/collisions>
+        )
+        {
+        }
+
+        def "visuals" (
+            instanceable = true
+            references = @./shadow_hand.usd@</shadow_hand/robot0_palm/visuals>
+        )
+        {
+        }
+    }
+
+    def Xform "robot0_ffknuckle" (
+        prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysxRigidBodyAPI", "PhysicsMassAPI"]
+    )
+    {
+        point3f physics:centerOfMass = (0, 0, 0)
+        float3 physics:diagonalInertia = (0.00001, 0.00001, 0.00001)
+        float physics:mass = 0.008
+        float physxRigidBody:angularDamping = 0.01
+        float physxRigidBody:maxAngularVelocity = 3666.93
+        float physxRigidBody:maxDepenetrationVelocity = 1000
+        float physxRigidBody:maxLinearVelocity = 1000
+        bool physxRigidBody:retainAccelerations = 1
+        float physxRigidBody:stabilizationThreshold = 0
+        matrix4d xformOp:transform = ( (-1.0000001001368801, -9.176704643572287e-12, 0.0000025351818616565615, 0), (-0.00000253518186167317, 0.0000035745590157842955, -1.0000000500602644, 0), (-1.2388751320386443e-14, -1.0000000500634778, -0.000003674699109446067, 0), (-0.033000025898218155, -0.3850000202655792, -0.010001296177506447, 1) )
+        uniform token[] xformOpOrder = ["xformOp:transform"]
+
+        def "visuals"
+        {
+        }
+    }
+
+    def Xform "robot0_ffproximal" (
+        prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysxRigidBodyAPI", "PhysicsMassAPI", "PhysicsFilteredPairsAPI"]
+    )
+    {
+        point3f physics:centerOfMass = (0, 0, 0.023)
+        float3 physics:diagonalInertia = (0.00001, 0.00001, 0.00001)
+        prepend rel physics:filteredPairs = [
+            </shadow_hand/robot0_forearm>,
+            </shadow_hand/robot0_wrist>,
+            </shadow_hand/robot0_palm>,
+            </shadow_hand/robot0_ffmiddle>,
+            </shadow_hand/robot0_ffdistal>,
+            </shadow_hand/robot0_mfmiddle>,
+            </shadow_hand/robot0_mfdistal>,
+            </shadow_hand/robot0_rfproximal>,
+            </shadow_hand/robot0_rfmiddle>,
+            </shadow_hand/robot0_rfdistal>,
+            </shadow_hand/robot0_lfmetacarpal>,
+            </shadow_hand/robot0_lfproximal>,
+            </shadow_hand/robot0_lfmiddle>,
+            </shadow_hand/robot0_lfdistal>,
+            </shadow_hand/robot0_thproximal>,
+            </shadow_hand/robot0_thmiddle>,
+        ]
+        float physics:mass = 0.014
+        float physxRigidBody:angularDamping = 0.01
+        float physxRigidBody:maxAngularVelocity = 3666.93
+        float physxRigidBody:maxDepenetrationVelocity = 1000
+        float physxRigidBody:maxLinearVelocity = 1000
+        bool physxRigidBody:retainAccelerations = 1
+        float physxRigidBody:stabilizationThreshold = 0
+        matrix4d xformOp:transform = ( (-1.0000001001368801, -9.176704643572287e-12, 0.0000025351818616565615, 0), (-0.00000253518186167317, 0.0000035745590157842955, -1.0000000500602644, 0), (-1.2388751320386443e-14, -1.0000000500634778, -0.000003674699109446067, 0), (-0.033000025898218155, -0.3850000202655792, -0.010001296177506447, 1) )
+        uniform token[] xformOpOrder = ["xformOp:transform"]
+
+        def "collisions" (
+            instanceable = true
+            references = @./shadow_hand.usd@</shadow_hand/robot0_ffproximal/collisions>
+        )
+        {
+        }
+
+        def "visuals" (
+            instanceable = true
+            references = @./shadow_hand.usd@</shadow_hand/robot0_ffproximal/visuals>
+        )
+        {
+        }
+    }
+
+    def Xform "robot0_ffmiddle" (
+        prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysxRigidBodyAPI", "PhysicsMassAPI", "PhysicsFilteredPairsAPI"]
+    )
+    {
+        point3f physics:centerOfMass = (0, 0, 0.011)
+        float3 physics:diagonalInertia = (0.00001, 0.00001, 0.00001)
+        prepend rel physics:filteredPairs = [
+            </shadow_hand/robot0_forearm>,
+            </shadow_hand/robot0_wrist>,
+            </shadow_hand/robot0_palm>,
+            </shadow_hand/robot0_ffproximal>,
+            </shadow_hand/robot0_ffdistal>,
+            </shadow_hand/robot0_mfproximal>,
+            </shadow_hand/robot0_mfmiddle>,
+            </shadow_hand/robot0_mfdistal>,
+            </shadow_hand/robot0_rfproximal>,
+            </shadow_hand/robot0_rfmiddle>,
+            </shadow_hand/robot0_rfdistal>,
+            </shadow_hand/robot0_lfmetacarpal>,
+            </shadow_hand/robot0_lfproximal>,
+            </shadow_hand/robot0_lfmiddle>,
+            </shadow_hand/robot0_lfdistal>,
+            </shadow_hand/robot0_thproximal>,
+            </shadow_hand/robot0_thmiddle>,
+        ]
+        float physics:mass = 0.012
+        float physxRigidBody:angularDamping = 0.01
+        float physxRigidBody:maxAngularVelocity = 3666.93
+        float physxRigidBody:maxDepenetrationVelocity = 1000
+        float physxRigidBody:maxLinearVelocity = 1000
+        bool physxRigidBody:retainAccelerations = 1
+        float physxRigidBody:stabilizationThreshold = 0
+        matrix4d xformOp:transform = ( (-1.0000001001368801, -9.176704643572287e-12, 0.0000025351818616565615, 0), (-0.00000253518186167317, 0.0000035745590157842955, -1.0000000500602644, 0), (-1.2388751320386443e-14, -1.0000000500634778, -0.000003674699109446067, 0), (-0.033000025898218155, -0.43000003695487976, -0.01000145636498928, 1) )
+        uniform token[] xformOpOrder = ["xformOp:transform"]
+
+        def "collisions" (
+            instanceable = true
+            references = @./shadow_hand.usd@</shadow_hand/robot0_ffmiddle/collisions>
+        )
+        {
+        }
+
+        def "visuals" (
+            instanceable = true
+            references = @./shadow_hand.usd@</shadow_hand/robot0_ffmiddle/visuals>
+        )
+        {
+        }
+    }
+
+    def Xform "robot0_ffdistal" (
+        prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysxRigidBodyAPI", "PhysicsMassAPI", "PhysicsFilteredPairsAPI", "PhysxArticulationForceSensorAPI"]
+    )
+    {
+        point3f physics:centerOfMass = (0, 0, 0.015)
+        float3 physics:diagonalInertia = (0.00001, 0.00001, 0.00001)
+        prepend rel physics:filteredPairs = [
+            </shadow_hand/robot0_forearm>,
+            </shadow_hand/robot0_wrist>,
+            </shadow_hand/robot0_palm>,
+            </shadow_hand/robot0_ffproximal>,
+            </shadow_hand/robot0_ffmiddle>,
+            </shadow_hand/robot0_mfproximal>,
+            </shadow_hand/robot0_mfmiddle>,
+            </shadow_hand/robot0_rfproximal>,
+            </shadow_hand/robot0_rfmiddle>,
+            </shadow_hand/robot0_rfdistal>,
+            </shadow_hand/robot0_lfmetacarpal>,
+            </shadow_hand/robot0_lfproximal>,
+            </shadow_hand/robot0_lfmiddle>,
+            </shadow_hand/robot0_lfdistal>,
+            </shadow_hand/robot0_thproximal>,
+            </shadow_hand/robot0_thmiddle>,
+        ]
+        float physics:mass = 0.01
+        float physxRigidBody:angularDamping = 0.01
+        float physxRigidBody:maxAngularVelocity = 3666.93
+        float physxRigidBody:maxDepenetrationVelocity = 1000
+        float physxRigidBody:maxLinearVelocity = 1000
+        bool physxRigidBody:retainAccelerations = 1
+        float physxRigidBody:stabilizationThreshold = 0
+        matrix4d xformOp:transform = ( (-1.0000001001368801, -9.176704643572287e-12, 0.0000025351818616565615, 0), (-0.00000253518186167317, 0.0000035745590157842955, -1.0000000500602644, 0), (-1.2388751320386443e-14, -1.0000000500634778, -0.000003674699109446067, 0), (-0.033000025898218155, -0.45500004291534424, -0.010001545771956444, 1) )
+        uniform token[] xformOpOrder = ["xformOp:transform"]
+
+        def "collisions" (
+            instanceable = true
+            references = @./shadow_hand.usd@</shadow_hand/robot0_ffdistal/collisions>
+        )
+        {
+        }
+
+        def "visuals" (
+            instanceable = true
+            references = @./shadow_hand.usd@</shadow_hand/robot0_ffdistal/visuals>
+        )
+        {
+        }
+    }
+
+    def Xform "robot0_mfknuckle" (
+        prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysxRigidBodyAPI", "PhysicsMassAPI"]
+    )
+    {
+        point3f physics:centerOfMass = (0, 0, 0)
+        float3 physics:diagonalInertia = (0.00001, 0.00001, 0.00001)
+        float physics:mass = 0.008
+        float physxRigidBody:angularDamping = 0.01
+        float physxRigidBody:maxAngularVelocity = 3666.93
+        float physxRigidBody:maxDepenetrationVelocity = 1000
+        float physxRigidBody:maxLinearVelocity = 1000
+        bool physxRigidBody:retainAccelerations = 1
+        float physxRigidBody:stabilizationThreshold = 0
+        matrix4d xformOp:transform = ( (-1.0000001001368801, -9.176704643572287e-12, 0.0000025351818616565615, 0), (-0.00000253518186167317, 0.0000035745590157842955, -1.0000000500602644, 0), (-1.2388751320386443e-14, -1.0000000500634778, -0.000003674699109446067, 0), (-0.01100002508610487, -0.3889999985694885, -0.010001378133893013, 1) )
+        uniform token[] xformOpOrder = ["xformOp:transform"]
+
+        def "visuals" (
+            instanceable = true
+            references = @./shadow_hand.usd@</shadow_hand/robot0_mfknuckle/visuals>
+        )
+        {
+        }
+    }
+
+    def Xform "robot0_mfproximal" (
+        prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysxRigidBodyAPI", "PhysicsMassAPI", "PhysicsFilteredPairsAPI"]
+    )
+    {
+        point3f physics:centerOfMass = (0, 0, 0.023)
+        float3 physics:diagonalInertia = (0.00001, 0.00001, 0.00001)
+        prepend rel physics:filteredPairs = [
+            </shadow_hand/robot0_forearm>,
+            </shadow_hand/robot0_wrist>,
+            </shadow_hand/robot0_palm>,
+            </shadow_hand/robot0_ffmiddle>,
+            </shadow_hand/robot0_ffdistal>,
+            </shadow_hand/robot0_mfmiddle>,
+            </shadow_hand/robot0_mfdistal>,
+            </shadow_hand/robot0_rfmiddle>,
+            </shadow_hand/robot0_rfdistal>,
+            </shadow_hand/robot0_lfmetacarpal>,
+            </shadow_hand/robot0_lfproximal>,
+            </shadow_hand/robot0_lfmiddle>,
+            </shadow_hand/robot0_lfdistal>,
+            </shadow_hand/robot0_thproximal>,
+            </shadow_hand/robot0_thmiddle>,
+        ]
+        float physics:mass = 0.014
+        float physxRigidBody:angularDamping = 0.01
+        float physxRigidBody:maxAngularVelocity = 3666.93
+        float physxRigidBody:maxDepenetrationVelocity = 1000
+        float physxRigidBody:maxLinearVelocity = 1000
+        bool physxRigidBody:retainAccelerations = 1
+        float physxRigidBody:stabilizationThreshold = 0
+        matrix4d xformOp:transform = ( (-1.0000001001368801, -9.176704643572287e-12, 0.0000025351818616565615, 0), (-0.00000253518186167317, 0.0000035745590157842955, -1.0000000500602644, 0), (-1.2388751320386443e-14, -1.0000000500634778, -0.000003674699109446067, 0), (-0.01100002508610487, -0.3889999985694885, -0.010001378133893013, 1) )
+        uniform token[] xformOpOrder = ["xformOp:transform"]
+
+        def "collisions" (
+            instanceable = true
+            references = @./shadow_hand.usd@</shadow_hand/robot0_mfproximal/collisions>
+        )
+        {
+        }
+
+        def "visuals" (
+            instanceable = true
+            references = @./shadow_hand.usd@</shadow_hand/robot0_mfproximal/visuals>
+        )
+        {
+        }
+    }
+
+    def Xform "robot0_mfmiddle" (
+        prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysxRigidBodyAPI", "PhysicsMassAPI", "PhysicsFilteredPairsAPI"]
+    )
+    {
+        point3f physics:centerOfMass = (0, 0, 0.012)
+        float3 physics:diagonalInertia = (0.00001, 0.00001, 0.00001)
+        prepend rel physics:filteredPairs = [
+            </shadow_hand/robot0_forearm>,
+            </shadow_hand/robot0_wrist>,
+            </shadow_hand/robot0_palm>,
+            </shadow_hand/robot0_ffproximal>,
+            </shadow_hand/robot0_ffmiddle>,
+            </shadow_hand/robot0_ffdistal>,
+            </shadow_hand/robot0_mfproximal>,
+            </shadow_hand/robot0_mfdistal>,
+            </shadow_hand/robot0_rfproximal>,
+            </shadow_hand/robot0_rfmiddle>,
+            </shadow_hand/robot0_rfdistal>,
+            </shadow_hand/robot0_lfmetacarpal>,
+            </shadow_hand/robot0_lfproximal>,
+            </shadow_hand/robot0_lfmiddle>,
+            </shadow_hand/robot0_lfdistal>,
+            </shadow_hand/robot0_thproximal>,
+            </shadow_hand/robot0_thmiddle>,
+            </shadow_hand/robot0_thdistal>,
+        ]
+        float physics:mass = 0.012
+        float physxRigidBody:angularDamping = 0.01
+        float physxRigidBody:maxAngularVelocity = 3666.93
+        float physxRigidBody:maxDepenetrationVelocity = 1000
+        float physxRigidBody:maxLinearVelocity = 1000
+        bool physxRigidBody:retainAccelerations = 1
+        float physxRigidBody:stabilizationThreshold = 0
+        matrix4d xformOp:transform = ( (-1.0000001001368801, -9.176704643572287e-12, 0.0000025351818616565615, 0), (-0.00000253518186167317, 0.0000035745590157842955, -1.0000000500602644, 0), (-1.2388751320386443e-14, -1.0000000500634778, -0.000003674699109446067, 0), (-0.01100002508610487, -0.43400001525878906, -0.010001538321375847, 1) )
+        uniform token[] xformOpOrder = ["xformOp:transform"]
+
+        def "collisions" (
+            instanceable = true
+            references = @./shadow_hand.usd@</shadow_hand/robot0_mfmiddle/collisions>
+        )
+        {
+        }
+
+        def "visuals" (
+            instanceable = true
+            references = @./shadow_hand.usd@</shadow_hand/robot0_mfmiddle/visuals>
+        )
+        {
+        }
+    }
+
+    def Xform "robot0_mfdistal" (
+        prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysxRigidBodyAPI", "PhysicsMassAPI", "PhysicsFilteredPairsAPI", "PhysxArticulationForceSensorAPI"]
+    )
+    {
+        point3f physics:centerOfMass = (0, 0, 0.015)
+        float3 physics:diagonalInertia = (0.00001, 0.00001, 0.00001)
+        prepend rel physics:filteredPairs = [
+            </shadow_hand/robot0_forearm>,
+            </shadow_hand/robot0_wrist>,
+            </shadow_hand/robot0_palm>,
+            </shadow_hand/robot0_ffproximal>,
+            </shadow_hand/robot0_ffmiddle>,
+            </shadow_hand/robot0_mfproximal>,
+            </shadow_hand/robot0_mfmiddle>,
+            </shadow_hand/robot0_rfproximal>,
+            </shadow_hand/robot0_rfmiddle>,
+            </shadow_hand/robot0_lfmetacarpal>,
+            </shadow_hand/robot0_lfproximal>,
+            </shadow_hand/robot0_lfmiddle>,
+            </shadow_hand/robot0_thproximal>,
+            </shadow_hand/robot0_thmiddle>,
+        ]
+        float physics:mass = 0.01
+        float physxRigidBody:angularDamping = 0.01
+        float physxRigidBody:maxAngularVelocity = 3666.93
+        float physxRigidBody:maxDepenetrationVelocity = 1000
+        float physxRigidBody:maxLinearVelocity = 1000
+        bool physxRigidBody:retainAccelerations = 1
+        float physxRigidBody:stabilizationThreshold = 0
+        matrix4d xformOp:transform = ( (-1.0000001001368801, -9.176704643572287e-12, 0.0000025351818616565615, 0), (-0.00000253518186167317, 0.0000035745590157842955, -1.0000000500602644, 0), (-1.2388751320386443e-14, -1.0000000500634778, -0.000003674699109446067, 0), (-0.01100002508610487, -0.45900002121925354, -0.01000162772834301, 1) )
+        uniform token[] xformOpOrder = ["xformOp:transform"]
+
+        def "collisions" (
+            instanceable = true
+            references = @./shadow_hand.usd@</shadow_hand/robot0_mfdistal/collisions>
+        )
+        {
+        }
+
+        def "visuals" (
+            instanceable = true
+            references = @./shadow_hand.usd@</shadow_hand/robot0_mfdistal/visuals>
+        )
+        {
+        }
+    }
+
+    def Xform "robot0_rfknuckle" (
+        prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysxRigidBodyAPI", "PhysicsMassAPI"]
+    )
+    {
+        point3f physics:centerOfMass = (0, 0, 0)
+        float3 physics:diagonalInertia = (0.00001, 0.00001, 0.00001)
+        float physics:mass = 0.008
+        float physxRigidBody:angularDamping = 0.01
+        float physxRigidBody:maxAngularVelocity = 3666.93
+        float physxRigidBody:maxDepenetrationVelocity = 1000
+        float physxRigidBody:maxLinearVelocity = 1000
+        bool physxRigidBody:retainAccelerations = 1
+        float physxRigidBody:stabilizationThreshold = 0
+        matrix4d xformOp:transform = ( (-1.0000001001368801, -9.176704643572287e-12, 0.0000025351818616565615, 0), (-0.00000253518186167317, 0.0000035745590157842955, -1.0000000500602644, 0), (-1.2388751320386443e-14, -1.0000000500634778, -0.000003674699109446067, 0), (0.01099997479468584, -0.3850000202655792, -0.0100014079362154, 1) )
+        uniform token[] xformOpOrder = ["xformOp:transform"]
+
+        def "visuals" (
+            instanceable = true
+            references = @./shadow_hand.usd@</shadow_hand/robot0_rfknuckle/visuals>
+        )
+        {
+        }
+    }
+
+    def Xform "robot0_rfproximal" (
+        prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysxRigidBodyAPI", "PhysicsMassAPI", "PhysicsFilteredPairsAPI"]
+    )
+    {
+        point3f physics:centerOfMass = (0, 0, 0.023)
+        float3 physics:diagonalInertia = (0.00001, 0.00001, 0.00001)
+        prepend rel physics:filteredPairs = [
+            </shadow_hand/robot0_forearm>,
+            </shadow_hand/robot0_wrist>,
+            </shadow_hand/robot0_palm>,
+            </shadow_hand/robot0_ffproximal>,
+            </shadow_hand/robot0_ffmiddle>,
+            </shadow_hand/robot0_ffdistal>,
+            </shadow_hand/robot0_mfmiddle>,
+            </shadow_hand/robot0_mfdistal>,
+            </shadow_hand/robot0_rfmiddle>,
+            </shadow_hand/robot0_rfdistal>,
+            </shadow_hand/robot0_lfmetacarpal>,
+            </shadow_hand/robot0_lfmiddle>,
+            </shadow_hand/robot0_lfdistal>,
+            </shadow_hand/robot0_thproximal>,
+            </shadow_hand/robot0_thmiddle>,
+            </shadow_hand/robot0_thdistal>,
+        ]
+        float physics:mass = 0.014
+        float physxRigidBody:angularDamping = 0.01
+        float physxRigidBody:maxAngularVelocity = 3666.93
+        float physxRigidBody:maxDepenetrationVelocity = 1000
+        float physxRigidBody:maxLinearVelocity = 1000
+        bool physxRigidBody:retainAccelerations = 1
+        float physxRigidBody:stabilizationThreshold = 0
+        matrix4d xformOp:transform = ( (-1.0000001001368801, -9.176704643572287e-12, 0.0000025351818616565615, 0), (-0.00000253518186167317, 0.0000035745590157842955, -1.0000000500602644, 0), (-1.2388751320386443e-14, -1.0000000500634778, -0.000003674699109446067, 0), (0.01099997479468584, -0.3850000202655792, -0.0100014079362154, 1) )
+        uniform token[] xformOpOrder = ["xformOp:transform"]
+
+        def "collisions" (
+            instanceable = true
+            references = @./shadow_hand.usd@</shadow_hand/robot0_rfproximal/collisions>
+        )
+        {
+        }
+
+        def "visuals" (
+            instanceable = true
+            references = @./shadow_hand.usd@</shadow_hand/robot0_rfproximal/visuals>
+        )
+        {
+        }
+    }
+
+    def Xform "robot0_rfmiddle" (
+        prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysxRigidBodyAPI", "PhysicsMassAPI", "PhysicsFilteredPairsAPI"]
+    )
+    {
+        point3f physics:centerOfMass = (0, 0, 0.012)
+        float3 physics:diagonalInertia = (0.00001, 0.00001, 0.00001)
+        prepend rel physics:filteredPairs = [
+            </shadow_hand/robot0_forearm>,
+            </shadow_hand/robot0_wrist>,
+            </shadow_hand/robot0_palm>,
+            </shadow_hand/robot0_ffproximal>,
+            </shadow_hand/robot0_ffmiddle>,
+            </shadow_hand/robot0_ffdistal>,
+            </shadow_hand/robot0_mfproximal>,
+            </shadow_hand/robot0_mfmiddle>,
+            </shadow_hand/robot0_mfdistal>,
+            </shadow_hand/robot0_rfproximal>,
+            </shadow_hand/robot0_rfdistal>,
+            </shadow_hand/robot0_lfmetacarpal>,
+            </shadow_hand/robot0_lfproximal>,
+            </shadow_hand/robot0_thproximal>,
+            </shadow_hand/robot0_thmiddle>,
+            </shadow_hand/robot0_thdistal>,
+        ]
+        float physics:mass = 0.012
+        float physxRigidBody:angularDamping = 0.01
+        float physxRigidBody:maxAngularVelocity = 3666.93
+        float physxRigidBody:maxDepenetrationVelocity = 1000
+        float physxRigidBody:maxLinearVelocity = 1000
+        bool physxRigidBody:retainAccelerations = 1
+        float physxRigidBody:stabilizationThreshold = 0
+        matrix4d xformOp:transform = ( (-1.0000001001368801, -9.176704643572287e-12, 0.0000025351818616565615, 0), (-0.00000253518186167317, 0.0000035745590157842955, -1.0000000500602644, 0), (-1.2388751320386443e-14, -1.0000000500634778, -0.000003674699109446067, 0), (0.01099997479468584, -0.43000003695487976, -0.010001568123698235, 1) )
+        uniform token[] xformOpOrder = ["xformOp:transform"]
+
+        def "collisions" (
+            instanceable = true
+            references = @./shadow_hand.usd@</shadow_hand/robot0_rfmiddle/collisions>
+        )
+        {
+        }
+
+        def "visuals" (
+            instanceable = true
+            references = @./shadow_hand.usd@</shadow_hand/robot0_rfmiddle/visuals>
+        )
+        {
+        }
+    }
+
+    def Xform "robot0_rfdistal" (
+        prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysxRigidBodyAPI", "PhysicsMassAPI", "PhysicsFilteredPairsAPI", "PhysxArticulationForceSensorAPI"]
+    )
+    {
+        point3f physics:centerOfMass = (0, 0, 0.015)
+        float3 physics:diagonalInertia = (0.00001, 0.00001, 0.00001)
+        prepend rel physics:filteredPairs = [
+            </shadow_hand/robot0_forearm>,
+            </shadow_hand/robot0_wrist>,
+            </shadow_hand/robot0_palm>,
+            </shadow_hand/robot0_ffproximal>,
+            </shadow_hand/robot0_ffmiddle>,
+            </shadow_hand/robot0_ffdistal>,
+            </shadow_hand/robot0_mfproximal>,
+            </shadow_hand/robot0_mfmiddle>,
+            </shadow_hand/robot0_rfproximal>,
+            </shadow_hand/robot0_rfmiddle>,
+            </shadow_hand/robot0_lfmetacarpal>,
+            </shadow_hand/robot0_lfproximal>,
+            </shadow_hand/robot0_thproximal>,
+            </shadow_hand/robot0_thmiddle>,
+        ]
+        float physics:mass = 0.01
+        float physxRigidBody:angularDamping = 0.01
+        float physxRigidBody:maxAngularVelocity = 3666.93
+        float physxRigidBody:maxDepenetrationVelocity = 1000
+        float physxRigidBody:maxLinearVelocity = 1000
+        bool physxRigidBody:retainAccelerations = 1
+        float physxRigidBody:stabilizationThreshold = 0
+        matrix4d xformOp:transform = ( (-1.0000001001368801, -9.176704643572287e-12, 0.0000025351818616565615, 0), (-0.00000253518186167317, 0.0000035745590157842955, -1.0000000500602644, 0), (-1.2388751320386443e-14, -1.0000000500634778, -0.000003674699109446067, 0), (0.01099997479468584, -0.45500004291534424, -0.010001657530665398, 1) )
+        uniform token[] xformOpOrder = ["xformOp:transform"]
+
+        def "collisions" (
+            instanceable = true
+            references = @./shadow_hand.usd@</shadow_hand/robot0_rfdistal/collisions>
+        )
+        {
+        }
+
+        def "visuals" (
+            instanceable = true
+            references = @./shadow_hand.usd@</shadow_hand/robot0_rfdistal/visuals>
+        )
+        {
+        }
+    }
+
+    def Xform "robot0_lfmetacarpal" (
+        prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysxRigidBodyAPI", "PhysicsMassAPI", "PhysicsFilteredPairsAPI"]
+    )
+    {
+        point3f physics:centerOfMass = (-0.014, 0.001, 0.014)
+        float3 physics:diagonalInertia = (0.00001, 0.00001, 0.00001)
+        prepend rel physics:filteredPairs = [
+            </shadow_hand/robot0_forearm>,
+            </shadow_hand/robot0_wrist>,
+            </shadow_hand/robot0_palm>,
+            </shadow_hand/robot0_ffproximal>,
+            </shadow_hand/robot0_ffmiddle>,
+            </shadow_hand/robot0_ffdistal>,
+            </shadow_hand/robot0_mfproximal>,
+            </shadow_hand/robot0_mfmiddle>,
+            </shadow_hand/robot0_mfdistal>,
+            </shadow_hand/robot0_rfproximal>,
+            </shadow_hand/robot0_rfmiddle>,
+            </shadow_hand/robot0_rfdistal>,
+            </shadow_hand/robot0_lfproximal>,
+            </shadow_hand/robot0_lfmiddle>,
+            </shadow_hand/robot0_lfdistal>,
+            </shadow_hand/robot0_thproximal>,
+            </shadow_hand/robot0_thmiddle>,
+            </shadow_hand/robot0_thdistal>,
+        ]
+        float physics:mass = 0.075
+        float physxRigidBody:angularDamping = 0.01
+        float physxRigidBody:maxAngularVelocity = 3666.93
+        float physxRigidBody:maxDepenetrationVelocity = 1000
+        float physxRigidBody:maxLinearVelocity = 1000
+        bool physxRigidBody:retainAccelerations = 1
+        float physxRigidBody:stabilizationThreshold = 0
+        matrix4d xformOp:transform = ( (-1.0000001001368801, -9.176704643572287e-12, 0.0000025351818616565615, 0), (-0.00000253518186167317, 0.0000035745590157842955, -1.0000000500602644, 0), (-1.2388751320386443e-14, -1.0000000500634778, -0.000003674699109446067, 0), (0.016999974846839905, -0.33400002121925354, -0.010001244023442268, 1) )
+        uniform token[] xformOpOrder = ["xformOp:transform"]
+
+        def "collisions" (
+            instanceable = true
+            references = @./shadow_hand.usd@</shadow_hand/robot0_lfmetacarpal/collisions>
+        )
+        {
+        }
+
+        def "visuals" (
+            instanceable = true
+            references = @./shadow_hand.usd@</shadow_hand/robot0_lfmetacarpal/visuals>
+        )
+        {
+        }
+    }
+
+    def Xform "robot0_lfknuckle" (
+        prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysxRigidBodyAPI", "PhysicsMassAPI"]
+    )
+    {
+        point3f physics:centerOfMass = (0, 0, 0)
+        float3 physics:diagonalInertia = (0.00001, 0.00001, 0.00001)
+        float physics:mass = 0.008
+        float physxRigidBody:angularDamping = 0.01
+        float physxRigidBody:maxAngularVelocity = 3666.93
+        float physxRigidBody:maxDepenetrationVelocity = 1000
+        float physxRigidBody:maxLinearVelocity = 1000
+        bool physxRigidBody:retainAccelerations = 1
+        float physxRigidBody:stabilizationThreshold = 0
+        matrix4d xformOp:transform = ( (-1.0000001001368801, -9.176704643572287e-12, 0.0000025351818616565615, 0), (-0.00000253518186167317, 0.0000035745590157842955, -1.0000000500602644, 0), (-1.2388751320386443e-14, -1.0000000500634778, -0.000003674699109446067, 0), (0.0339999757707119, -0.37800002098083496, -0.010001445189118385, 1) )
+        uniform token[] xformOpOrder = ["xformOp:transform"]
+
+        def "visuals" (
+            instanceable = true
+            references = @./shadow_hand.usd@</shadow_hand/robot0_lfknuckle/visuals>
+        )
+        {
+        }
+    }
+
+    def Xform "robot0_lfproximal" (
+        prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysxRigidBodyAPI", "PhysicsMassAPI", "PhysicsFilteredPairsAPI"]
+    )
+    {
+        point3f physics:centerOfMass = (0, 0, 0.023)
+        float3 physics:diagonalInertia = (0.00001, 0.00001, 0.00001)
+        prepend rel physics:filteredPairs = [
+            </shadow_hand/robot0_forearm>,
+            </shadow_hand/robot0_wrist>,
+            </shadow_hand/robot0_palm>,
+            </shadow_hand/robot0_ffproximal>,
+            </shadow_hand/robot0_ffmiddle>,
+            </shadow_hand/robot0_ffdistal>,
+            </shadow_hand/robot0_mfproximal>,
+            </shadow_hand/robot0_mfmiddle>,
+            </shadow_hand/robot0_mfdistal>,
+            </shadow_hand/robot0_rfmiddle>,
+            </shadow_hand/robot0_rfdistal>,
+            </shadow_hand/robot0_lfmetacarpal>,
+            </shadow_hand/robot0_lfmiddle>,
+            </shadow_hand/robot0_lfdistal>,
+            </shadow_hand/robot0_thproximal>,
+            </shadow_hand/robot0_thmiddle>,
+            </shadow_hand/robot0_thdistal>,
+        ]
+        float physics:mass = 0.014
+        float physxRigidBody:angularDamping = 0.01
+        float physxRigidBody:maxAngularVelocity = 3666.93
+        float physxRigidBody:maxDepenetrationVelocity = 1000
+        float physxRigidBody:maxLinearVelocity = 1000
+        bool physxRigidBody:retainAccelerations = 1
+        float physxRigidBody:stabilizationThreshold = 0
+        matrix4d xformOp:transform = ( (-1.0000001001368801, -9.176704643572287e-12, 0.0000025351818616565615, 0), (-0.00000253518186167317, 0.0000035745590157842955, -1.0000000500602644, 0), (-1.2388751320386443e-14, -1.0000000500634778, -0.000003674699109446067, 0), (0.0339999757707119, -0.37800002098083496, -0.010001445189118385, 1) )
+        uniform token[] xformOpOrder = ["xformOp:transform"]
+
+        def "collisions" (
+            instanceable = true
+            references = @./shadow_hand.usd@</shadow_hand/robot0_lfproximal/collisions>
+        )
+        {
+        }
+
+        def "visuals" (
+            instanceable = true
+            references = @./shadow_hand.usd@</shadow_hand/robot0_lfproximal/visuals>
+        )
+        {
+        }
+    }
+
+    def Xform "robot0_lfmiddle" (
+        prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysxRigidBodyAPI", "PhysicsMassAPI", "PhysicsFilteredPairsAPI"]
+    )
+    {
+        point3f physics:centerOfMass = (0, 0, 0.012)
+        float3 physics:diagonalInertia = (0.00001, 0.00001, 0.00001)
+        prepend rel physics:filteredPairs = [
+            </shadow_hand/robot0_forearm>,
+            </shadow_hand/robot0_wrist>,
+            </shadow_hand/robot0_palm>,
+            </shadow_hand/robot0_ffproximal>,
+            </shadow_hand/robot0_ffmiddle>,
+            </shadow_hand/robot0_ffdistal>,
+            </shadow_hand/robot0_mfproximal>,
+            </shadow_hand/robot0_mfmiddle>,
+            </shadow_hand/robot0_mfdistal>,
+            </shadow_hand/robot0_rfproximal>,
+            </shadow_hand/robot0_lfmetacarpal>,
+            </shadow_hand/robot0_lfproximal>,
+            </shadow_hand/robot0_lfdistal>,
+            </shadow_hand/robot0_thproximal>,
+            </shadow_hand/robot0_thmiddle>,
+            </shadow_hand/robot0_thdistal>,
+        ]
+        float physics:mass = 0.012
+        float physxRigidBody:angularDamping = 0.01
+        float physxRigidBody:maxAngularVelocity = 3666.93
+        float physxRigidBody:maxDepenetrationVelocity = 1000
+        float physxRigidBody:maxLinearVelocity = 1000
+        bool physxRigidBody:retainAccelerations = 1
+        float physxRigidBody:stabilizationThreshold = 0
+        matrix4d xformOp:transform = ( (-1.0000001001368801, -9.176704643572287e-12, 0.0000025351818616565615, 0), (-0.00000253518186167317, 0.0000035745590157842955, -1.0000000500602644, 0), (-1.2388751320386443e-14, -1.0000000500634778, -0.000003674699109446067, 0), (0.0339999757707119, -0.4230000376701355, -0.01000160537660122, 1) )
+        uniform token[] xformOpOrder = ["xformOp:transform"]
+
+        def "collisions" (
+            instanceable = true
+            references = @./shadow_hand.usd@</shadow_hand/robot0_lfmiddle/collisions>
+        )
+        {
+        }
+
+        def "visuals" (
+            instanceable = true
+            references = @./shadow_hand.usd@</shadow_hand/robot0_lfmiddle/visuals>
+        )
+        {
+        }
+    }
+
+    def Xform "robot0_lfdistal" (
+        prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysxRigidBodyAPI", "PhysicsMassAPI", "PhysicsFilteredPairsAPI", "PhysxArticulationForceSensorAPI"]
+    )
+    {
+        point3f physics:centerOfMass = (0, 0, 0.015)
+        float3 physics:diagonalInertia = (0.00001, 0.00001, 0.00001)
+        prepend rel physics:filteredPairs = [
+            </shadow_hand/robot0_forearm>,
+            </shadow_hand/robot0_wrist>,
+            </shadow_hand/robot0_palm>,
+            </shadow_hand/robot0_ffproximal>,
+            </shadow_hand/robot0_ffmiddle>,
+            </shadow_hand/robot0_ffdistal>,
+            </shadow_hand/robot0_mfproximal>,
+            </shadow_hand/robot0_mfmiddle>,
+            </shadow_hand/robot0_rfproximal>,
+            </shadow_hand/robot0_lfmetacarpal>,
+            </shadow_hand/robot0_lfproximal>,
+            </shadow_hand/robot0_lfmiddle>,
+            </shadow_hand/robot0_thproximal>,
+            </shadow_hand/robot0_thmiddle>,
+        ]
+        float physics:mass = 0.01
+        float physxRigidBody:angularDamping = 0.01
+        float physxRigidBody:maxAngularVelocity = 3666.93
+        float physxRigidBody:maxDepenetrationVelocity = 1000
+        float physxRigidBody:maxLinearVelocity = 1000
+        bool physxRigidBody:retainAccelerations = 1
+        float physxRigidBody:stabilizationThreshold = 0
+        matrix4d xformOp:transform = ( (-1.0000001001368801, -9.176704643572287e-12, 0.0000025351818616565615, 0), (-0.00000253518186167317, 0.0000035745590157842955, -1.0000000500602644, 0), (-1.2388751320386443e-14, -1.0000000500634778, -0.000003674699109446067, 0), (0.0339999757707119, -0.4480000436306, -0.010001694783568382, 1) )
+        uniform token[] xformOpOrder = ["xformOp:transform"]
+
+        def "collisions" (
+            instanceable = true
+            references = @./shadow_hand.usd@</shadow_hand/robot0_lfdistal/collisions>
+        )
+        {
+        }
+
+        def "visuals" (
+            instanceable = true
+            references = @./shadow_hand.usd@</shadow_hand/robot0_lfdistal/visuals>
+        )
+        {
+        }
+    }
+
+    def Xform "robot0_thbase" (
+        prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysxRigidBodyAPI", "PhysicsMassAPI", "PhysicsFilteredPairsAPI"]
+    )
+    {
+        point3f physics:centerOfMass = (0, 0, 0)
+        float3 physics:diagonalInertia = (0.00001, 0.00001, 0.00001)
+        float physics:mass = 0.01
+        float physxRigidBody:angularDamping = 0.01
+        float physxRigidBody:maxAngularVelocity = 3666.93
+        float physxRigidBody:maxDepenetrationVelocity = 1000
+        float physxRigidBody:maxLinearVelocity = 1000
+        bool physxRigidBody:retainAccelerations = 1
+        float physxRigidBody:stabilizationThreshold = 0
+        matrix4d xformOp:transform = ( (-0.7073882287107267, 0.7068252332882068, 0.000004368606404625552, 0), (-0.0000025630376327967497, 0.0000036106775382904743, -1.000000004836913, 0), (-0.7068252332970602, -0.707388223868243, -7.50806350424682e-7, 0), (-0.034000005573034286, -0.3190000653266907, -0.0010010600090026855, 1) )
+        uniform token[] xformOpOrder = ["xformOp:transform"]
+
+        def "collisions" (
+            instanceable = true
+            references = @./shadow_hand.usd@</shadow_hand/robot0_thbase/collisions>
+        )
+        {
+        }
+
+        def "visuals" (
+            instanceable = true
+            references = @./shadow_hand.usd@</shadow_hand/robot0_thbase/visuals>
+        )
+        {
+        }
+    }
+
+    def Xform "robot0_thproximal" (
+        prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysxRigidBodyAPI", "PhysicsMassAPI", "PhysicsFilteredPairsAPI"]
+    )
+    {
+        point3f physics:centerOfMass = (0, 0, 0.017)
+        float3 physics:diagonalInertia = (0.00001, 0.00001, 0.00001)
+        prepend rel physics:filteredPairs = [
+            </shadow_hand/robot0_forearm>,
+            </shadow_hand/robot0_wrist>,
+            </shadow_hand/robot0_palm>,
+            </shadow_hand/robot0_ffproximal>,
+            </shadow_hand/robot0_ffmiddle>,
+            </shadow_hand/robot0_ffdistal>,
+            </shadow_hand/robot0_mfproximal>,
+            </shadow_hand/robot0_mfmiddle>,
+            </shadow_hand/robot0_mfdistal>,
+            </shadow_hand/robot0_rfproximal>,
+            </shadow_hand/robot0_rfmiddle>,
+            </shadow_hand/robot0_rfdistal>,
+            </shadow_hand/robot0_lfmetacarpal>,
+            </shadow_hand/robot0_lfproximal>,
+            </shadow_hand/robot0_lfmiddle>,
+            </shadow_hand/robot0_lfdistal>,
+            </shadow_hand/robot0_thmiddle>,
+            </shadow_hand/robot0_thdistal>,
+        ]
+        float physics:mass = 0.016
+        float physxRigidBody:angularDamping = 0.01
+        float physxRigidBody:maxAngularVelocity = 3666.93
+        float physxRigidBody:maxDepenetrationVelocity = 1000
+        float physxRigidBody:maxLinearVelocity = 1000
+        bool physxRigidBody:retainAccelerations = 1
+        float physxRigidBody:stabilizationThreshold = 0
+        matrix4d xformOp:transform = ( (-0.7073882287107267, 0.7068252332882068, 0.000004368606404625552, 0), (-0.0000025630376327967497, 0.0000036106775382904743, -1.000000004836913, 0), (-0.7068252332970602, -0.707388223868243, -7.50806350424682e-7, 0), (-0.034000005573034286, -0.3190000653266907, -0.0010010600090026855, 1) )
+        uniform token[] xformOpOrder = ["xformOp:transform"]
+
+        def "collisions" (
+            instanceable = true
+            references = @./shadow_hand.usd@</shadow_hand/robot0_thproximal/collisions>
+        )
+        {
+        }
+
+        def "visuals" (
+            instanceable = true
+            references = @./shadow_hand.usd@</shadow_hand/robot0_thproximal/visuals>
+        )
+        {
+        }
+    }
+
+    def Xform "robot0_thhub" (
+        prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysxRigidBodyAPI", "PhysicsMassAPI", "PhysicsFilteredPairsAPI"]
+    )
+    {
+        point3f physics:centerOfMass = (0, 0, 0)
+        float3 physics:diagonalInertia = (0.00001, 0.00001, 0.00001)
+        float physics:mass = 0.002
+        float physxRigidBody:angularDamping = 0.01
+        float physxRigidBody:maxAngularVelocity = 3666.93
+        float physxRigidBody:maxDepenetrationVelocity = 1000
+        float physxRigidBody:maxLinearVelocity = 1000
+        bool physxRigidBody:retainAccelerations = 1
+        float physxRigidBody:stabilizationThreshold = 0
+        matrix4d xformOp:transform = ( (-0.7073882287107267, 0.7068252332882068, 0.000004368606404625552, 0), (-0.0000025630376327967497, 0.0000036106775382904743, -1.000000004836913, 0), (-0.7068252332970602, -0.707388223868243, -7.50806350424682e-7, 0), (-0.06085936352610588, -0.34588080644607544, -0.0010010860860347748, 1) )
+        uniform token[] xformOpOrder = ["xformOp:transform"]
+
+        def "collisions" (
+            instanceable = true
+            references = @./shadow_hand.usd@</shadow_hand/robot0_thhub/collisions>
+        )
+        {
+        }
+
+        def "visuals" (
+            instanceable = true
+            references = @./shadow_hand.usd@</shadow_hand/robot0_thhub/visuals>
+        )
+        {
+        }
+    }
+
+    def Xform "robot0_thmiddle" (
+        prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysxRigidBodyAPI", "PhysicsMassAPI", "PhysicsFilteredPairsAPI"]
+    )
+    {
+        point3f physics:centerOfMass = (0, 0, 0.016)
+        float3 physics:diagonalInertia = (0.00001, 0.00001, 0.00001)
+        prepend rel physics:filteredPairs = [
+            </shadow_hand/robot0_forearm>,
+            </shadow_hand/robot0_wrist>,
+            </shadow_hand/robot0_palm>,
+            </shadow_hand/robot0_ffproximal>,
+            </shadow_hand/robot0_ffmiddle>,
+            </shadow_hand/robot0_ffdistal>,
+            </shadow_hand/robot0_mfproximal>,
+            </shadow_hand/robot0_mfmiddle>,
+            </shadow_hand/robot0_mfdistal>,
+            </shadow_hand/robot0_rfproximal>,
+            </shadow_hand/robot0_rfmiddle>,
+            </shadow_hand/robot0_rfdistal>,
+            </shadow_hand/robot0_lfmetacarpal>,
+            </shadow_hand/robot0_lfproximal>,
+            </shadow_hand/robot0_lfmiddle>,
+            </shadow_hand/robot0_lfdistal>,
+            </shadow_hand/robot0_thproximal>,
+            </shadow_hand/robot0_thdistal>,
+        ]
+        float physics:mass = 0.016
+        float physxRigidBody:angularDamping = 0.01
+        float physxRigidBody:maxAngularVelocity = 3666.93
+        float physxRigidBody:maxDepenetrationVelocity = 1000
+        float physxRigidBody:maxLinearVelocity = 1000
+        bool physxRigidBody:retainAccelerations = 1
+        float physxRigidBody:stabilizationThreshold = 0
+        matrix4d xformOp:transform = ( (-0.7073882287107267, 0.7068252332882068, 0.000004368606404625552, 0), (-0.0000025630376327967497, 0.0000036106775382904743, -1.000000004836913, 0), (-0.7068252332970602, -0.707388223868243, -7.50806350424682e-7, 0), (-0.06085936352610588, -0.34588080644607544, -0.0010010860860347748, 1) )
+        uniform token[] xformOpOrder = ["xformOp:transform"]
+
+        def "collisions" (
+            instanceable = true
+            references = @./shadow_hand.usd@</shadow_hand/robot0_thmiddle/collisions>
+        )
+        {
+        }
+
+        def "visuals" (
+            instanceable = true
+            references = @./shadow_hand.usd@</shadow_hand/robot0_thmiddle/visuals>
+        )
+        {
+        }
+    }
+
+    def Xform "robot0_thdistal" (
+        prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysxRigidBodyAPI", "PhysicsMassAPI", "PhysicsFilteredPairsAPI", "PhysxArticulationForceSensorAPI"]
+    )
+    {
+        point3f physics:centerOfMass = (0, 0, 0.016)
+        float3 physics:diagonalInertia = (0.00001, 0.00001, 0.00001)
+        prepend rel physics:filteredPairs = [
+            </shadow_hand/robot0_forearm>,
+            </shadow_hand/robot0_wrist>,
+            </shadow_hand/robot0_palm>,
+            </shadow_hand/robot0_mfmiddle>,
+            </shadow_hand/robot0_rfproximal>,
+            </shadow_hand/robot0_rfmiddle>,
+            </shadow_hand/robot0_lfmetacarpal>,
+            </shadow_hand/robot0_lfproximal>,
+            </shadow_hand/robot0_lfmiddle>,
+            </shadow_hand/robot0_thproximal>,
+            </shadow_hand/robot0_thmiddle>,
+        ]
+        float physics:mass = 0.016
+        float physxRigidBody:angularDamping = 0.01
+        float physxRigidBody:maxAngularVelocity = 3666.93
+        float physxRigidBody:maxDepenetrationVelocity = 1000
+        float physxRigidBody:maxLinearVelocity = 1000
+        bool physxRigidBody:retainAccelerations = 1
+        float physxRigidBody:stabilizationThreshold = 0
+        matrix4d xformOp:transform = ( (-0.7073882287107267, 0.7068252332882068, 0.000004368606404625552, 0), (-0.0000025630376327967497, 0.0000036106775382904743, -1.000000004836913, 0), (-0.7068252332970602, -0.707388223868243, -7.50806350424682e-7, 0), (-0.08347777277231216, -0.3685172200202942, -0.0010011084377765656, 1) )
+        uniform token[] xformOpOrder = ["xformOp:transform"]
+
+        def "collisions" (
+            instanceable = true
+            references = @./shadow_hand.usd@</shadow_hand/robot0_thdistal/collisions>
+        )
+        {
+        }
+
+        def "visuals" (
+            instanceable = true
+            references = @./shadow_hand.usd@</shadow_hand/robot0_thdistal/visuals>
+        )
+        {
+        }
+    }
+}
+
+over "OmniverseKit_Persp"
+{
+    float2 clippingRange = (0.01, 10000000)
+}
+
+over "Render" (
+    hide_in_stage_window = true
+)
+{
+}
+
